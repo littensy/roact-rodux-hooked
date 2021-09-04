@@ -3,6 +3,23 @@ import { useStore } from "./use-store";
 import type Rodux from "@rbxts/rodux";
 
 /**
+ * This interface allows you to easily create a hook that is properly typed for your store's root state.
+ *
+ * @example
+ * interface RootState {
+ *   property: string;
+ * }
+ *
+ * const useAppSelector: TypedUseSelectorHook<RootState> = useSelector;
+ */
+export interface TypedUseSelectorHook<State> {
+	<Selected>(
+		selector: (state: State) => Selected,
+		equalityFn?: (selectedState: Selected, oldSelectedState: Selected) => boolean,
+	): Selected;
+}
+
+/**
  * A hook to access the Rodux Store's state. This hook takes a selector function as an argument. The selector is called
  * with the store state.
  *
