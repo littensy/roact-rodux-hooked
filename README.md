@@ -38,6 +38,7 @@ const Counter = hooked(() => {
 ```
 
 ```tsx
+import { Provider } from "@rbxts/roact-rodux-hooked";
 import Roact from "@rbxts/roact";
 import { Provider, store } from "./store";
 
@@ -46,6 +47,6 @@ function App() {
     <Provider store={store}>
       ...
     </Provider>
-  )
+  );
 }
 ```
