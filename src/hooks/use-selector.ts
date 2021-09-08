@@ -51,7 +51,7 @@ export function useSelector<State = {}, Selected = unknown>(
 	const [selectedState, setSelectedState] = useState<Selected>(() => selector(store.getState()));
 
 	useEffect(() => {
-		setSelectedState(store.getState())
+		setSelectedState(selector(store.getState()))
 	}, [selector])
 
 	const latestSelectedState = useMutable<Selected>(selectedState);
