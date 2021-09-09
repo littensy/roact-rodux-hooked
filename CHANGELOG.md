@@ -1,4 +1,9 @@
-# Next
+# 1.0.2
+
+## Development
+
+ - Make `useSelector` accurate to react-redux impl c2af8414dd1587fbcd7cb5ea1f0bb29e77763748 @littensy
+ - Simplify `shallowEqual` with @rbxts/object-utils 8c5d88f47f3a2c8183c29e35d23c92fbe151d933 @littensy
 
 # 1.0.1
 
