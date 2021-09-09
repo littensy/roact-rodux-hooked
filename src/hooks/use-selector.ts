@@ -1,6 +1,5 @@
-import { useEffect, useMutable, useState } from "@rbxts/roact-hooked";
+import { useEffect, useMutable, useReducer } from "@rbxts/roact-hooked";
 import { useStore } from "./use-store";
-import type Rodux from "@rbxts/rodux";
 
 /**
  * This interface allows you to easily create a hook that is properly typed for your store's root state.
@@ -44,28 +43,87 @@ export interface TypedUseSelectorHook<State> {
  */
 export function useSelector<State = {}, Selected = unknown>(
 	selector: (state: State) => Selected,
-	equalityFn: (selectedState: Selected, oldSelectedState: Selected) => boolean = (a: Selected, b: Selected) =>
+	equalityFn: (selectedState: Selected | undefined, oldSelectedState: Selected | undefined) => boolean = (a, b) =>
 		a === b,
 ): Selected {
-	const store = useStore<Rodux.Store<State>>();
-	const [selectedState, setSelectedState] = useState<Selected>(() => selector(store.getState()));
+	const [, forceRender] = useReducer((s: number) => s + 1, 0);
+	const store = useStore<State>();
 
-	const latestSelectedState = useMutable<Selected>(selectedState);
+	const latestSubscriptionCallbackError = useMutable<string>();
+	const latestSelector = useMutable<(state: State) => Selected>();
+	const latestStoreState = useMutable<State>();
+	const latestSelectedState = useMutable<Selected>();
+
+	const storeState = store.getState();
+	let selectedState: Selected | undefined;
+
+	try {
+		if (
+			selector !== latestSelector.current ||
+			storeState !== latestStoreState.current ||
+			latestSubscriptionCallbackError.current
+		) {
+			const newSelectedState = selector(storeState);
+			// ensure latest selected state is reused so that a custom equality function can result in identical references
+			if (
+				latestSelectedState.current === undefined ||
+				!equalityFn(newSelectedState, latestSelectedState.current)
+			) {
+				selectedState = newSelectedState;
+			} else {
+				selectedState = latestSelectedState.current;
+			}
+		} else {
+			selectedState = latestSelectedState.current;
+		}
+	} catch (err) {
+		if (latestSubscriptionCallbackError.current !== undefined) {
+			err += `\nThe error may be correlated with this previous error:\n${latestSubscriptionCallbackError.current}\n\n`;
+		}
+
+		throw err;
+	}
+
 	useEffect(() => {
+		latestSelector.current = selector;
+		latestStoreState.current = storeState;
 		latestSelectedState.current = selectedState;
+		latestSubscriptionCallbackError.current = undefined;
 	});
 
 	useEffect(() => {
-		const signal = store.changed.connect((newState) => {
-			const oldSelectedState = latestSelectedState.current;
-			const newSelectedState = selector(newState);
+		function checkForUpdates(newStoreState: State) {
+			try {
+				// Avoid calling selector multiple times if the store's state has not changed
+				if (newStoreState === latestStoreState.current) {
+					return;
+				}
 
-			if (oldSelectedState === undefined || !equalityFn(newSelectedState, oldSelectedState)) {
-				setSelectedState(newSelectedState);
+				const newSelectedState = latestSelector.current!(newStoreState);
+
+				if (equalityFn(newSelectedState, latestSelectedState.current)) {
+					return;
+				}
+
+				latestSelectedState.current = newSelectedState;
+				latestStoreState.current = newStoreState;
+			} catch (err) {
+				// we ignore all errors here, since when the component
+				// is re-rendered, the selectors are called again, and
+				// will throw again, if neither props nor store state
+				// changed
+				latestSubscriptionCallbackError.current = err as string;
 			}
-		});
-		return () => signal.disconnect();
-	}, []);
 
-	return selectedState;
+			forceRender();
+		}
+
+		const subscription = store.changed.connect(checkForUpdates);
+
+		checkForUpdates(store.getState());
+
+		return () => subscription.disconnect();
+	}, [store]);
+
+	return selectedState as Selected;
 }
