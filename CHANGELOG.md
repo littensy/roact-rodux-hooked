@@ -1,3 +1,9 @@
+# 1.0.3
+
+## Bug Fixes
+
+ - `TypedUseSelectorHook` was not applicable to `useSelector` a4c2eb6822d36f4ad5af6abcef9413562255f0d5 @littensy
+
 # 1.0.2
 
 ## Development
