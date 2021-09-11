@@ -14,7 +14,7 @@ import { useStore } from "./use-store";
 export interface TypedUseSelectorHook<State> {
 	<Selected>(
 		selector: (state: State) => Selected,
-		equalityFn?: (selectedState: Selected, oldSelectedState: Selected) => boolean,
+		equalityFn?: (selectedState: Selected | undefined, oldSelectedState: Selected | undefined) => boolean,
 	): Selected;
 }
 
