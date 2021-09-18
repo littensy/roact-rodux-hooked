@@ -115,7 +115,7 @@ export function useSelector<State = {}, Selected = unknown>(
 				latestSubscriptionCallbackError.current = err as string;
 			}
 
-			forceRender();
+			task.spawn(forceRender);
 		}
 
 		const subscription = store.changed.connect(checkForUpdates);
