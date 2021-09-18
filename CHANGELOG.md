@@ -1,3 +1,9 @@
+# 1.0.4
+
+## Development
+
+ - `useSelector` forces rerenders with `task.spawn` to keep error traceback clean
+
 # 1.0.3
 
 ## Bug Fixes
