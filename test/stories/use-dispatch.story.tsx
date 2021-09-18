@@ -1,7 +1,7 @@
-import Roact from "@rbxts/roact";
-import { hooked } from "@rbxts/roact-hooked";
 import { Provider, useDispatch, useSelector } from "@rbxts/roact-rodux-hooked";
 import { Store } from "@rbxts/rodux";
+import { hooked } from "@rbxts/roact-hooked";
+import Roact from "@rbxts/roact";
 
 type State = { count: number };
 type Action = { type: "increment" } | { type: "decrement" };

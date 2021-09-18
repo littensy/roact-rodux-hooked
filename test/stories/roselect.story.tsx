@@ -1,8 +1,8 @@
-import Roact from "@rbxts/roact";
-import { hooked } from "@rbxts/roact-hooked";
 import { Provider, useDispatch, useSelector } from "@rbxts/roact-rodux-hooked";
-import { createReducer, Store } from "@rbxts/rodux";
+import { Store, createReducer } from "@rbxts/rodux";
 import { createSelector } from "@rbxts/roselect";
+import { hooked } from "@rbxts/roact-hooked";
+import Roact from "@rbxts/roact";
 
 type Todo = { completed: boolean; id: number };
 type TodosState = { todos: Array<Todo> };
