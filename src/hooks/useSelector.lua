@@ -70,20 +70,22 @@ local function useSelector(selector, isEqual)
 
 	Hooks.useEffect(function()
 		local function checkForUpdates(newStoreState)
-			local success, err = pcall(function()
+			local success, shouldRender = pcall(function()
 				-- Avoid calling selector multiple times if the store's state has not changed
 				if newStoreState == latestStoreState.current then
-					return
+					return false
 				end
 
 				local newSelectedState = latestSelector.current(newStoreState)
 
 				if isEqual(newSelectedState, latestSelectedState.current) then
-					return
+					return false
 				end
 
 				latestSelectedState.current = newSelectedState
 				latestStoreState.current = newStoreState
+
+				return true
 			end)
 
 			if not success then
@@ -91,10 +93,12 @@ local function useSelector(selector, isEqual)
 				-- is re-rendered, the selectors are called again, and
 				-- will throw again, if neither props nor store state
 				-- changed
-				latestSubscriptionCallbackError.current = err
+				latestSubscriptionCallbackError.current = shouldRender
+			elseif shouldRender then
+				-- pcall will not block this rerender in the guard clauses,
+				-- so use the returned boolean value to decide
+				forceRender()
 			end
-
-			forceRender()
 		end
 
 		local subscription = store.changed:connect(checkForUpdates)
