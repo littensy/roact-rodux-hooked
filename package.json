@@ -1,6 +1,6 @@
 {
   "name": "@rbxts/roact-rodux-hooked",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "Hooks for Rodux with roact-hooked",
   "main": "src/init.lua",
   "scripts": {
