@@ -51,8 +51,5 @@
   "peerDependencies": {
     "@rbxts/roact": "*",
     "@rbxts/roact-hooked": "^2.0.0"
-  },
-  "dependencies": {
-    "@rbxts/object-utils": "^1.0.4"
   }
 }

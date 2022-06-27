@@ -2,59 +2,54 @@
 
 Useful hooks for Rodux with [roact-hooked](https://www.npmjs.com/package/@rbxts/roact-hooked)
 
-🔌 This library only exists for use with roact-hooked
+⚙️ This library only exists for use with roact-hooked
 
-⚡ Compatible with [roselect](https://www.npmjs.com/package/@rbxts/roselect)
+🔌 Compatible with [roselect](https://www.npmjs.com/package/@rbxts/roselect)
 
-📚 Types from [@types/react-redux](https://www.npmjs.com/package/@types/react-redux)
-
-```
-✋🏾 This is a work in progress!
-```
+📚 Based on [@types/react-redux](https://www.npmjs.com/package/@types/react-redux)
 
 ## Usage
 
 ```tsx
-import { useDispatch, useSelector } from "@rbxts/roact-rodux-hooked";
-import { hooked } from "@rbxts/roact-hooked";
 import Roact from "@rbxts/roact";
-import { Store, StoreState, increment } from "./store";
+import { useDispatch, useSelector } from "@rbxts/roact-rodux-hooked";
+import { withHooks } from "@rbxts/roact-hooked";
+import { Store, StoreState, increment } from "client/store";
 
-const Counter = hooked(() => {
-  const count = useSelector((state: StoreState) => state.count);
-  const dispatch = useDispatch<Store>();
+function Counter() {
+	const count = useSelector((state: StoreState) => state.count);
+	const dispatch = useDispatch<Store>();
 
-  return (
-    <textbutton
-      Text={`Counter: ${count}`}
-      BackgroundColor3={Color3.fromRGB(80, 120, 200)}
-      Size={new UDim2(0.5, 0, 1, 0)}
-      Event={{
-        Activated: () => dispatch(increment()),
-      }}
-    />
-  );
-});
+	return (
+		<textbutton
+			Text={`Counter: ${count}`}
+			BackgroundColor3={Color3.fromRGB(80, 120, 200)}
+			Size={new UDim2(0.5, 0, 1, 0)}
+			Event={{
+				Activated: () => dispatch(increment()),
+			}}
+		/>
+	);
+}
+
+export default withHooks(Counter);
 ```
 
 ```tsx
-import { Provider } from "@rbxts/roact-rodux-hooked";
 import Roact from "@rbxts/roact";
-import { Provider, store } from "./store";
+import { StoreProvider } from "@rbxts/roact-rodux-hooked";
+import { configureStore } from "./store";
 
-function App() {
-  return (
-    <Provider store={store}>
-      ...
-    </Provider>
-  );
+export default function App() {
+	return <StoreProvider store={configureStore()}>...</StoreProvider>;
 }
 ```
 
 ```ts
-import { TypedUseSelectorHook, useDispatch, useSelector } from "@rbxts/roact-rodux-hooked";
-import type { AppDispatch, RootState } from "./store";
+import { TypedUseSelectorHook, useDispatch, useSelector, useStore } from "@rbxts/roact-rodux-hooked";
+import { RootDispatch, RootState, RootStore } from "./store";
 
-export const useAppDispatch = () => useDispatch<AppDispatch>();
-export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector;
+export const useRootStore = useStore as () => RootStore;
+export const useRootDispatch = useDispatch as () => RootDispatch;
+export const useRootSelector = useSelector as TypedUseSelectorHook<RootState>;
 ```
