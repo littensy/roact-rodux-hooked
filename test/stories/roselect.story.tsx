@@ -1,7 +1,7 @@
-import { Provider, useDispatch, useSelector } from "@rbxts/roact-rodux-hooked";
 import { Store, createReducer } from "@rbxts/rodux";
+import { StoreProvider, useDispatch, useSelector } from "@rbxts/roact-rodux-hooked";
 import { createSelector } from "@rbxts/roselect";
-import { hooked } from "@rbxts/roact-hooked";
+import { withHooks } from "@rbxts/roact-hooked";
 import Roact from "@rbxts/roact";
 
 type Todo = { completed: boolean; id: number };
@@ -43,7 +43,7 @@ const selectLowestTodosId = createSelector(
 	(todos) => todos.reduce((lowestId, { id }) => math.min(lowestId, id), math.huge),
 );
 
-const Counter = hooked(() => {
+const Counter = withHooks(() => {
 	const dispatch = useDispatch<TodosStore>();
 
 	const numCompletedTodos = useSelector(selectNumCompletedTodos);
@@ -93,9 +93,9 @@ const Counter = hooked(() => {
 
 export = (target: Frame) => {
 	const handle = Roact.mount(
-		<Provider store={store}>
+		<StoreProvider store={store}>
 			<Counter />
-		</Provider>,
+		</StoreProvider>,
 		target,
 		"Counter",
 	);

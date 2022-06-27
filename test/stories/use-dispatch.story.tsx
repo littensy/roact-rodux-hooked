@@ -1,6 +1,6 @@
-import { Provider, useDispatch, useSelector } from "@rbxts/roact-rodux-hooked";
 import { Store } from "@rbxts/rodux";
-import { hooked } from "@rbxts/roact-hooked";
+import { StoreProvider, useDispatch, useSelector } from "@rbxts/roact-rodux-hooked";
+import { withHooks } from "@rbxts/roact-hooked";
 import Roact from "@rbxts/roact";
 
 type State = { count: number };
@@ -20,7 +20,7 @@ function reducer(state: State = { count: 0 }, action: Action): State {
 
 const store = new Store<State, Action>(reducer);
 
-const Counter = hooked(() => {
+const Counter = withHooks(() => {
 	const count = useSelector((state: State) => state.count);
 	const dispatch = useDispatch<GlobalStore>();
 
@@ -58,9 +58,9 @@ const Counter = hooked(() => {
 
 export = (target: Frame) => {
 	const handle = Roact.mount(
-		<Provider store={store}>
+		<StoreProvider store={store}>
 			<Counter />
-		</Provider>,
+		</StoreProvider>,
 		target,
 		"Counter",
 	);
