@@ -1,4 +1,4 @@
-local Roact = require(script.Parent.Parent.Roact)
+local Roact = require(script.Parent.Parent.vendor.Roact)
 local RoactRoduxContext = require(script.Parent.Context)
 
 local function StoreProvider(props)

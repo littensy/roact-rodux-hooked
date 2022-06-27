@@ -1,6 +1,6 @@
 -- https://github.com/reduxjs/react-redux/blob/7.x/src/hooks/useSelector.js
 
-local Hooks = require(script.Parent.Parent.RoactHooked)
+local Hooks = require(script.Parent.Parent.vendor.RoactHooked)
 local useStore = require(script.Parent.useStore)
 
 local function refEquality(a, b)

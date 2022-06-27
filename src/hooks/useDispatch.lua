@@ -1,4 +1,4 @@
-local Hooks = require(script.Parent.Parent.RoactHooked)
+local Hooks = require(script.Parent.Parent.vendor.RoactHooked)
 local useStore = require(script.Parent.useStore)
 
 local function useDispatch()
