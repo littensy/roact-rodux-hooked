@@ -97,7 +97,7 @@ local function useSelector(selector, isEqual)
 			elseif shouldRender then
 				-- pcall will not block this rerender in the guard clauses,
 				-- so use the returned boolean value to decide
-				forceRender()
+				task.spawn(forceRender)
 			end
 		end
 
